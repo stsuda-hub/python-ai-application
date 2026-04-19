@@ -1,10 +1,13 @@
 import streamlit as st
 
+from utils.gemini_client import render_api_key_sidebar
+
 st.set_page_config(
     page_title="AIライティングツール",
     page_icon="✍️",
     layout="wide",
 )
+render_api_key_sidebar()
 
 st.title("AIライティングツール")
 st.caption("Gemini API を使った個人用ライティングアシスタント")
@@ -26,12 +29,14 @@ st.markdown(
     | キャッチコピー生成 | 商品・サービスのキャッチコピーを提案 |
     | 議事録整形 | 会議メモを構造化された議事録に整形 |
 
-    ### セットアップ
+    ### 使い方
 
-    1. `.env.example` をコピーして `.env` を作成
-    2. `GEMINI_API_KEY` に [Google AI Studio](https://aistudio.google.com/) で取得したAPIキーを設定
-    3. `pip install -r requirements.txt`
-    4. `streamlit run app.py`
+    1. 画面左のサイドバーに、[Google AI Studio](https://aistudio.google.com/) で取得した Gemini API キーを入力
+    2. 使いたいツールのページを開く
+    3. フォームに内容を入力して生成
+
+    API キーはブラウザのセッションのみに保持され、サーバーには保存されません。
+    ページを閉じると入力した API キーはクリアされます。
     """
 )
 

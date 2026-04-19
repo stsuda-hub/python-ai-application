@@ -4,9 +4,10 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 import streamlit as st
-from utils.gemini_client import generate_text_stream
+from utils.gemini_client import generate_text_stream, render_api_key_sidebar
 
 st.set_page_config(page_title="文章リライト・校正", page_icon="✏️", layout="wide")
+render_api_key_sidebar()
 
 st.title("文章リライト・校正")
 st.caption("誤字脱字のチェックや、文体の改善・リライトを行います。")

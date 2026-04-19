@@ -4,9 +4,10 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 import streamlit as st
-from utils.gemini_client import generate_text_stream
+from utils.gemini_client import generate_text_stream, render_api_key_sidebar
 
 st.set_page_config(page_title="翻訳", page_icon="🌐", layout="wide")
+render_api_key_sidebar()
 
 st.title("翻訳")
 st.caption("多言語間の翻訳を行います。トーンや用途に合わせた自然な訳文を生成します。")

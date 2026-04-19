@@ -43,15 +43,32 @@ DEFAULT_SAFETY_SETTINGS = [
 DEFAULT_MAX_OUTPUT_TOKENS = 8192
 
 
+SESSION_KEY = "gemini_api_key"
+
+
+def render_api_key_sidebar() -> None:
+    """サイドバーに Gemini API キー入力欄を表示し、session_state に保存する。
+    各ページの先頭で呼び出す前提。"""
+    with st.sidebar:
+        st.subheader("Gemini API キー")
+        current = st.session_state.get(SESSION_KEY, "")
+        entered = st.text_input(
+            "API キーを入力",
+            value=current,
+            type="password",
+            key=f"{SESSION_KEY}_input",
+            help="Google AI Studio (https://aistudio.google.com/) で取得したキーを貼り付けてください。",
+        )
+        if entered != current:
+            st.session_state[SESSION_KEY] = entered
+        if not st.session_state.get(SESSION_KEY):
+            st.caption("未入力のままだと生成できません。")
+
+
 def get_api_key() -> str:
-    key = os.getenv("GEMINI_API_KEY")
+    key = st.session_state.get(SESSION_KEY)
     if not key:
-        try:
-            key = st.secrets["GEMINI_API_KEY"]
-        except Exception:
-            key = None
-    if not key:
-        st.error("GEMINI_API_KEY が設定されていません。.env ファイルに設定してください。")
+        st.error("画面左のサイドバーに Gemini API キーを入力してください。")
         st.stop()
     return key
 
@@ -61,8 +78,8 @@ def get_model_name() -> str:
 
 
 @st.cache_resource
-def get_client() -> genai.Client:
-    return genai.Client(api_key=get_api_key())
+def get_client(api_key: str) -> genai.Client:
+    return genai.Client(api_key=api_key)
 
 
 def _hardened_instruction(system_instruction: str | None) -> str:
@@ -91,7 +108,7 @@ def generate_text(
     model: str | None = None,
     max_output_tokens: int = DEFAULT_MAX_OUTPUT_TOKENS,
 ) -> str:
-    client = get_client()
+    client = get_client(get_api_key())
     response = client.models.generate_content(
         model=model or get_model_name(),
         contents=prompt,
@@ -107,7 +124,7 @@ def generate_text_stream(
     model: str | None = None,
     max_output_tokens: int = DEFAULT_MAX_OUTPUT_TOKENS,
 ):
-    client = get_client()
+    client = get_client(get_api_key())
     for chunk in client.models.generate_content_stream(
         model=model or get_model_name(),
         contents=prompt,

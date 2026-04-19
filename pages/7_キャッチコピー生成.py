@@ -4,9 +4,10 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 import streamlit as st
-from utils.gemini_client import generate_text_stream
+from utils.gemini_client import generate_text_stream, render_api_key_sidebar
 
 st.set_page_config(page_title="キャッチコピー生成", page_icon="💡", layout="wide")
+render_api_key_sidebar()
 
 st.title("キャッチコピー生成")
 st.caption("商品・サービス・イベントなどのキャッチコピーを複数案提案します。")
